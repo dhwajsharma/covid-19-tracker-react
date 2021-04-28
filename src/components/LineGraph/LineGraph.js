@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import "./LineGraph.css"
-import { Line } from "react-chartjs-2"
-import numeral from "numeral"
+import React, { useState, useEffect } from "react";
+import { Line } from "react-chartjs-2";
+import numeral from "numeral";
 
 const options = {
     legend: {
@@ -64,42 +63,44 @@ const buildChartData = (data, casesType) => {
     return chartData;
 };
 
-
-const LineGraph = ({ casesType = "cases" }) => {
+function LineGraph({ casesType = "cases" }) {
     const [data, setData] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
             await fetch("https://disease.sh/v3/covid-19/historical/all?lastdays=120")
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data) => {
                     let chartData = buildChartData(data, casesType);
                     setData(chartData);
-                })
-        }
-        fetchData();
+                    console.log(chartData);
+                    // buildChart(chartData);
+                });
+        };
 
-    }, [casesType])
+        fetchData();
+    }, [casesType]);
 
     return (
         <div>
-            <h1>graph</h1>
             {data?.length > 0 && (
                 <Line
-                    options={options}
                     data={{
                         datasets: [
                             {
                                 backgroundColor: "rgba(204, 16, 52, 0.5)",
                                 borderColor: "#CC1034",
-                                data: data
-                            }
+                                data: data,
+                            },
                         ],
                     }}
+                    options={options}
                 />
             )}
         </div>
-    )
+    );
 }
 
-export default LineGraph
+export default LineGraph;
